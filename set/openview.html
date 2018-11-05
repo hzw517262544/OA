@@ -110,9 +110,13 @@ mui.plusReady(function(){
  
 	var address=myStorage.getItem("address");
 	var user_name=myStorage.getItem("user_name");
+	var picUrl = myStorage.getItem("picUrl");
 	
 	//获取头像
-	mui.ajax(address+'/app/getUserImg',{
+	if(picUrl){
+		document.getElementById("userImg").src = address+picUrl;
+	}else{
+		mui.ajax(address+'/app/getUserImg',{
 		data:{
 			username:user_name,
 		},
@@ -124,7 +128,6 @@ mui.plusReady(function(){
 		success:function(data){
 			if(data.code == 0){
 				var file = data.img;
-				console.log(address+file.url);
 				document.getElementById("userImg").src = address+file.url;
 			}else{
 				//没有添加默认头像
@@ -136,6 +139,8 @@ mui.plusReady(function(){
 			mui.toast('没有数据');
 		}
 	},'JOSN');
+	}
+	
 });
 </script>	
 
@@ -256,6 +261,7 @@ mui.plusReady(function(){
             timeout:15000,//超时时间设置为10秒；
             success:function(data){
                 if(data.code == 0 ){
+                	myStorage.setItem("picUrl", data.file.url);
                     mui.toast('操作成功');
                 }else{
                 	mui.toast('操作失败');

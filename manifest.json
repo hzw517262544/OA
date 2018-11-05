@@ -854,11 +854,11 @@
 					"fonts/mui.ttf",
 					"css/mui.min.css",
 					"js/myStorage.js",
-					"html/app.html"
+					"html/app.html",
+					"html/set.html"
 				],
 				"refer": [
 					"html/liebiao.html",
-					"html/set.html",
 					"call/call.html"
 				],
 				"priority": 0

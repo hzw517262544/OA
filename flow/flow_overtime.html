@@ -125,7 +125,7 @@
 			
 			.srk {
 				float: right;
-				width: 64%;
+				width: 64%!important;
 				border: 1px solid #34cd99;
 				height: 37px;
 				padding-left: 8px;
@@ -195,13 +195,16 @@
 				<li class="mui-table-view-cell">
 					<div class="mui-input-row">
 						<label>申请类型：</label>
-						
-							<div class="srk" >
+							<div>
+								<button id='overtimePicker' class="mui-btn mui-btn-block srk" type='button'>请选择类型</button>
+								<a id='overtime_type' hidden="hidden"></a>
+							</div>
+							<!--<div class="srk" >
 								<a href="#popover" id="openPopover">
 							<p  class="mrz" id="overtime_type">加班</p>
-							<!--<span class="img-jt srk-icon"><img src="../image/qj-jt_03.png"></span>-->
+							<span class="img-jt srk-icon"><img src="../image/qj-jt_03.png"></span>
 								</a>
-						</div>
+							</div>-->
 					
 					</div>
 				</li>
@@ -209,7 +212,7 @@
 				<li class="mui-table-view-cell">
 					<div class="mui-input-row">
 						<label>开始时间：</label>
-						<div class="srk">
+						<div class="srk" id='starttimePicker'>
 							<a  class="mrz" id='starttime'>请选择开始时间</a>
 							<span class="img-calendar srk-icon"><img src="../image/qj-calendar_03.png"></span>
 						</div>
@@ -218,7 +221,7 @@
 				<li class="mui-table-view-cell">
 					<div class="mui-input-row">
 						<label>结束时间：</label>
-						<div class="srk">
+						<div class="srk" id='endtimePicker'>
 							<p  class="mrz" id='endtime'>请选择结束时间</p>
 							<span class="img-calendar srk-icon"><img src="../image/qj-calendar_03.png"></span>
 						</div>
@@ -227,7 +230,7 @@
 				<li class="mui-table-view-cell">
 					<div class="mui-input-row">
 						<label>申请事由：</label>
-						<textarea id="explain" rows="5" placeholder="请详细说明申请事由"></textarea>
+						<textarea id="explain" maxlength="500" rows="5" placeholder="请详细说明申请事由"></textarea>
 					</div>
 				</li>
 			</ul>
@@ -238,7 +241,7 @@
 
 		<script type="text/javascript">
 			//处理时间
-			var starttime = document.getElementById("starttime");
+			var starttime = document.getElementById("starttimePicker");
 			starttime.addEventListener("tap", function() {
 				var dtpicker = new mui.DtPicker({
 					type: "datetime", //设置日历初始视图模式 
@@ -247,11 +250,11 @@
 					labels: ['年', '月', '日', '时', '分'], //设置默认标签区域提示语 
 				});
 				dtpicker.show(function(e) {
-					starttime.innerText = e.text;
+					document.getElementById("starttime").innerText = e.text;
 				});
 			});
 
-			var endtime = document.getElementById("endtime");
+			var endtime = document.getElementById("endtimePicker");
 			endtime.addEventListener("tap", function() {
 				var dtpicker = new mui.DtPicker({
 					type: "datetime", //设置日历初始视图模式 
@@ -260,7 +263,7 @@
 					labels: ['年', '月', '日', '时', '分'], //设置默认标签区域提示语 
 				})
 				dtpicker.show(function(e) {
-					endtime.innerText = e.text;
+					document.getElementById("endtime").innerText = e.text;
 
 				});
 				/*  dtPicker.dispose();*/
@@ -269,23 +272,72 @@
 		<script type="text/javascript">
 			
 			mui.plusReady(function() {
+				var address = myStorage.getItem("address");
+				var leavetype = myStorage.getItem("leavetype");
 				var emp_name = myStorage.getItem("emp_name");
 				document.getElementById("emp_name").innerHTML = emp_name;
 				
+				var overtimePicker = new mui.PopPicker();
+				var overtimeData = [];
+				
+				mui.ajax(address + '/app/loadDict', {
+					data: {
+						type: 'APP_OVERTIME_TYPE',
+					},
+					dataType: 'json', //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					async:true,
+					crossDomain: 'false',
+					timeout: 15000, //超时时间设置为10秒；              
+					success: function(data) {
+						for(var i=0;i<data.dictType.length;i++){
+							overtimeData.push({
+								value:data.dictType[i].value,
+								text:data.dictType[i].name
+							});
+						}
+						overtimePicker.setData(overtimeData);
+						var showOvertimePicker = document.getElementById('overtimePicker');
+//							var userResult = document.getElementById('userResult');
+						showOvertimePicker.addEventListener('tap', function(event) {
+							overtimePicker.show(function(items) {
+							document.getElementById("overtime_type").innerHTML=items[0].value;
+							document.getElementById("overtimePicker").innerHTML = items[0].text;
+							
+						/*userResult.innerText = JSON.stringify(items[0]);*/
+						//返回 false 可以阻止选择框的关闭
+						//return false;
+								});
+						}, false);
+//							console.log(leavetypeData);
+						/*var dataList = { "list": data.dictType };
+						var leavetype = template('test', dataList);
+						console.log(leavetype);
+						myStorage.setItem("leavetype", leavetype);
+						document.getElementById("popover").innerHTML = leavetype;*/
+
+					},
+					error: function(xhr, type, errorThrown) {
+						mui.toast('网络异常');
+					}
+				}, 'JOSN');
+				//处理上传
+			
 			});
 			var address = myStorage.getItem("address");
 			var sure = document.getElementById("sure");
 			sure.addEventListener("tap", function() {
 				var emp_id = myStorage.getItem("emp_id");
+				var user_name = myStorage.getItem("user_name");
 				var emp_name = myStorage.getItem("emp_name");
-				var job_number = myStorage.getItem("job_number");
-				var dept_name = myStorage.getItem("dept_name");
 				var overtime_type = document.getElementById('overtime_type').innerHTML;
-
+				var overtime_type_name = document.getElementById('overtimePicker').innerHTML;
 				var starttime = document.getElementById('starttime').innerHTML;
 				var endtime = document.getElementById('endtime').innerHTML;
 				var explain = document.getElementById('explain').value;
-				if(!starttime) {
+				if(!overtime_type){
+					mui.toast('请选择类型');
+				}else if(!starttime) {
 					mui.toast('请选择开始时间');
 				} else if(!endtime) {
 					mui.toast('请选择结束时间');
@@ -296,26 +348,25 @@
 				} else if(!explain) {
 					mui.toast('请填入说明');
 				} else {
-					mui.ajax(address + 'flow_overtime.php', {
+					mui.ajax(address + '/app/applyInfo/save', {
 						data: {
-							dept_name: dept_name,
-							emp_id: emp_id,
-							emp_name: emp_name,
-							job_number: job_number,
-							overtime_type: overtime_type,
-							starttime: starttime,
-							endtime: endtime,
-							explain: explain,
+							username:user_name,
+							name:emp_name,
+							applyType:'3',
+							applyTypeName:'加班申请',
+							applySecodType:overtime_type,
+							applySecodTypeName:overtime_type_name,
+							applyStartTime:starttime,
+							applyEndTime:endtime,
+							applyContent:explain
+							
 						},
 						dataType: 'json', //服务器返回json格式数据
 						type: 'post', //HTTP请求类型
 						crossDomain: 'false',
 						timeout: 15000, //超时时间设置为10秒；       
 						success: function(data) {
-
-							if(data == 2) {
-								mui.toast("数据异常");
-							} else {
+							if(data.code == 0) {
 								mui.alert('接下来看你们老大态度', '提交成功', function() {
 									var wobj = plus.webview.getWebviewById("flow_overtime.html");
 									  wobj.reload(true);
@@ -327,6 +378,8 @@
 										}
 									})*/
 								}, 'div');
+							} else {
+								mui.toast("数据异常");
 							}
 
 						},

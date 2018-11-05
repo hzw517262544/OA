@@ -9,8 +9,8 @@
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		<link href="../css/mui.min.css" rel="stylesheet" />
 		<link href="../css/public.css" rel="stylesheet" />
-	  <link rel="stylesheet" type="text/css" href="../css/mui.picker.min.css" />
-	  <link rel="stylesheet" type="text/css" href="../css/mui.poppicker.css" />
+	  	<link rel="stylesheet" type="text/css" href="../css/mui.picker.min.css" />
+	  	<link rel="stylesheet" type="text/css" href="../css/mui.poppicker.css" />
 		<script src="../js/mui.min.js"></script>
 		<script src="../js/template-web.js"></script>
 		<script src="../js/myStorage.js"></script>
@@ -198,7 +198,7 @@
 					<div class="mui-input-row">
 						<label>请假类型：</label>
 							<div>
-								<button id='leavetypePicker' class="mui-btn mui-btn-block srk" type='button'>请选择请假类型</button>
+								<button id='leavetypePicker' class="mui-btn mui-btn-block srk" type='button'>请选择类型</button>
 								<a id='leave_typed' hidden="hidden"></a>
 							</div>
 							<!--<div id='userResult'></div>-->
@@ -267,51 +267,48 @@
 				
 				var leavetypePicker = new mui.PopPicker();
 				var leavetypeData = [];
-				if(/*leavetype*/false) {
-					document.getElementById("popover").innerHTML = leavetype;
-				} else {
-					mui.ajax(address + '/app/loadDict', {
-						data: {
-							type: 'APP_LEAVE_TYPE',
-						},
-						dataType: 'json', //服务器返回json格式数据
-						type: 'post', //HTTP请求类型
-						async:true,
-						crossDomain: 'false',
-						timeout: 15000, //超时时间设置为10秒；              
-						success: function(data) {
-							for(var i=0;i<data.dictType.length;i++){
-								leavetypeData.push({
-									value:data.dictType[i].name,
-									text:data.dictType[i].value
-								});
-							}
-							leavetypePicker.setData(leavetypeData);
-							var showLeavetypePicker = document.getElementById('leavetypePicker');
-//							var userResult = document.getElementById('userResult');
-							showLeavetypePicker.addEventListener('tap', function(event) {
-								leavetypePicker.show(function(items) {
-								document.getElementById("leave_typed").innerHTML=items[0].value;
-								document.getElementById("leavetypePicker").innerHTML = items[0].text;
-								console.log(items[0].text);
-							/*userResult.innerText = JSON.stringify(items[0]);*/
-							//返回 false 可以阻止选择框的关闭
-							//return false;
-									});
-							}, false);
-//							console.log(leavetypeData);
-							/*var dataList = { "list": data.dictType };
-							var leavetype = template('test', dataList);
-							console.log(leavetype);
-							myStorage.setItem("leavetype", leavetype);
-							document.getElementById("popover").innerHTML = leavetype;*/
-
-						},
-						error: function(xhr, type, errorThrown) {
-							mui.toast('网络异常');
+				
+				mui.ajax(address + '/app/loadDict', {
+					data: {
+						type: 'APP_LEAVE_TYPE',
+					},
+					dataType: 'json', //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					async:true,
+					crossDomain: 'false',
+					timeout: 15000, //超时时间设置为10秒；              
+					success: function(data) {
+						for(var i=0;i<data.dictType.length;i++){
+							leavetypeData.push({
+								value:data.dictType[i].value,
+								text:data.dictType[i].name
+							});
 						}
-					}, 'JOSN');
-				}
+						leavetypePicker.setData(leavetypeData);
+						var showLeavetypePicker = document.getElementById('leavetypePicker');
+//							var userResult = document.getElementById('userResult');
+						showLeavetypePicker.addEventListener('tap', function(event) {
+							leavetypePicker.show(function(items) {
+							document.getElementById("leave_typed").innerHTML=items[0].value;
+							document.getElementById("leavetypePicker").innerHTML = items[0].text;
+							console.log(items[0].text);
+						/*userResult.innerText = JSON.stringify(items[0]);*/
+						//返回 false 可以阻止选择框的关闭
+						//return false;
+								});
+						}, false);
+//							console.log(leavetypeData);
+						/*var dataList = { "list": data.dictType };
+						var leavetype = template('test', dataList);
+						console.log(leavetype);
+						myStorage.setItem("leavetype", leavetype);
+						document.getElementById("popover").innerHTML = leavetype;*/
+
+					},
+					error: function(xhr, type, errorThrown) {
+						mui.toast('网络异常');
+					}
+				}, 'JOSN');
 				//处理上传
 			
 			});
@@ -366,9 +363,9 @@
 				var explain = document.getElementById('explain').value;
 				if(!leave_typed) {
 					mui.toast('请选择请假类型');
-				} else if(!starttime||starttime=='选择请假开始时间') {
+				} else if(!starttime) {
 					mui.toast('请选择开始时间');
-				} else if(!endtime||endtime=='选择请假结束时间') {
+				} else if(!endtime) {
 					mui.toast('请选择结束时间');
 				} else if(starttime == '请选择请假开始时间') {
 					mui.toast('请选择开始时间');

@@ -103,32 +103,38 @@
 		}
 
 		function addData() {
+			var userId = myStorage.getItem("emp_id");
 			var dept_name = myStorage.getItem('dept_name');
 			var emp_name = myStorage.getItem('emp_name');
 			var address = myStorage.getItem("address");
-			mui.ajax(address + 'annouc_list.php', {
+			mui.ajax(address + '/app/oa/notify/selfList', {
 				data: {
-					dept_name: dept_name,
+					userId: userId,
+					offset:0,
+					limit:10000
 				},
 				dataType: 'json',
-				type: 'post',
+				type: 'get',
 				crossDomain: 'false',
 				timeout: 15000,
 				success: function(data) {
 					var finallist = '';
 					for(i = 0; i < data.length; i++) {
-						var lookname = data[i].annouc_look + "";
+						/*var lookname = rows[i].annouc_look + "";
 						var annouc_look = lookname.split(",");
-						var lookp = dept_name + '-' + emp_name;
+						var lookp = dept_name + '-' + emp_name;*/
 						var look = "";
-						if(!in_array(lookp, annouc_look)) {
-
+						if(rows[i].isRead != '1') {
 							look = "<span class='mui-pull-right mui-h6 xq' style='color:red'>未读</span>";
+						}else{
+							look = "<span class='mui-pull-right mui-h6 xq' style='color:red'>已读</span>";
 						}
 					
-finallist = finallist +'<li id="' + data[i].annouc_id + '" class="mui-table-view-cell"><div class="mui-table"><h4 class="mui-ellipsis">'+data[i].annouc_title+'</h4><span class="mui-pull-right mui-h6 xq">'+look+'</span><p class="mui-h6 fbz">'+data[i].annouc_apname+'<span class="mui-h6">'+chendate('Y-m-d H:i',data[i].annouc_time)+'</span></p></div></li>';
-						
-					
+				finallist = finallist +'<li id="' + rows[i].id + 
+				'" class="mui-table-view-cell"><div class="mui-table"><h4 class="mui-ellipsis">'+
+				rows[i].title+'</h4><span class="mui-pull-right mui-h6 xq">'+look+
+				'</span><p class="mui-h6 fbz">'+rows[i].createByName+'<span class="mui-h6">'+
+				rows[i].updateDate+'</span></p></div></li>';
 					
 					}
 
@@ -154,32 +160,39 @@ finallist = finallist +'<li id="' + data[i].annouc_id + '" class="mui-table-view
 		}
 
 		mui.plusReady(function() {
+			var userId = myStorage.getItem("emp_id");
 			var dept_name = myStorage.getItem('dept_name');
 			var emp_name = myStorage.getItem('emp_name');
 			var address = myStorage.getItem("address");
-			mui.ajax(address + 'annouc_list.php', {
+			mui.ajax(address + '/app/oa/notify/selfList', {
 				data: {
-					dept_name: dept_name,
+					userId: userId,
+					offset:0,
+					limit:10000
 				},
 				dataType: 'json',
-				type: 'post',
+				type: 'get',
 				crossDomain: 'false',
 				timeout: 15000,
 				success: function(data) {
+					var rows = data.rows;
 					var finallist = '';
-					for(i = 0; i < data.length; i++) {
-						var lookname = data[i].annouc_look + "";
+					for(i = 0; i < rows.length; i++) {
+						/*var lookname = rows[i].annouc_look + "";
 						var annouc_look = lookname.split(",");
-						var lookp = dept_name + '-' + emp_name;
+						var lookp = dept_name + '-' + emp_name;*/
 						var look = "";
-						if(!in_array(lookp, annouc_look)) {
-
+						if(rows[i].isRead != '1') {
 							look = "<span class='mui-pull-right mui-h6 xq' style='color:red'>未读</span>";
+						}else{
+							look = "<span class='mui-pull-right mui-h6 xq' style='color:red'>已读</span>";
 						}
 					
-finallist = finallist +'<li id="' + data[i].annouc_id + '" class="mui-table-view-cell"><div class="mui-table"><h4 class="mui-ellipsis">'+data[i].annouc_title+'</h4><span class="mui-pull-right mui-h6 xq">'+look+'</span><p class="mui-h6 fbz">'+data[i].annouc_apname+'<span class="mui-h6">'+chendate('Y-m-d H:i',data[i].annouc_time)+'</span></p></div></li>';
-						
-					
+				finallist = finallist +'<li id="' + rows[i].id + 
+				'" class="mui-table-view-cell"><div class="mui-table"><h4 class="mui-ellipsis">'+
+				rows[i].title+'</h4><span class="mui-pull-right mui-h6 xq">'+look+
+				'</span><p class="mui-h6 fbz">'+rows[i].createByName+'<span class="mui-h6">'+
+				rows[i].updateDate+'</span></p></div></li>';
 					
 					}
 
@@ -203,7 +216,7 @@ finallist = finallist +'<li id="' + data[i].annouc_id + '" class="mui-table-view
 
 			mui('#annouclist').on('tap', 'li', function() {
 				var annouc_id = this.id;
-
+				
 				mui.openWindow({
 					url: 'annouc_details.html',
 					id: 'annouc_details.html',

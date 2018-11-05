@@ -84,27 +84,26 @@
 		function addData() {
 			var self = plus.webview.currentWebview();
 			var annouc_id = self.annouc_id;
-
+			var userId = myStorage.getItem("emp_id");
+			
 			var address = myStorage.getItem("address");
-			var dept_name = myStorage.getItem("dept_name");
-			var emp_name = myStorage.getItem("emp_name");
 
-			mui.ajax(address + 'annouc_details.php', {
+			mui.ajax(address + '/app/oa/notify/read', {
 				data: {
-					annouc_id: annouc_id,
-					dept_name: dept_name,
-					emp_name: emp_name
+					id:annouc_id,
+					userId:userId
 				},
 				dataType: 'json',
-				type: 'post',
+				type: 'get',
 				crossDomain: 'false',
 				timeout: 15000,
 				success: function(data) {
-					//mui.toast(data);
-					document.getElementById("content").innerHTML = data.annouc_content;
-					document.getElementById("title").innerHTML = data.annouc_title;
-					document.getElementById("author").innerHTML = data.annouc_apname;
-					document.getElementById("time").innerHTML = chendate('Y-m-d H:i:s', data.annouc_time);
+					
+					console.log(notify.content.replace('src="','src="'+address));
+					document.getElementById("content").innerHTML = notify.content.replace('src="','src="'+address);
+					document.getElementById("title").innerHTML = notify.title;
+					document.getElementById("author").innerHTML = notify.createByName;
+					document.getElementById("time").innerHTML =  notify.updateDate;
 				},
 				error: function(xhr, type, errorThrown) {
 					mui.toast('网络异常');
@@ -125,27 +124,25 @@
 
 			var self = plus.webview.currentWebview();
 			var annouc_id = self.annouc_id;
-
+			var userId = myStorage.getItem("emp_id");
 			var address = myStorage.getItem("address");
-			var dept_name = myStorage.getItem("dept_name");
-			var emp_name = myStorage.getItem("emp_name");
-
-			mui.ajax(address + 'annouc_details.php', {
+			
+			mui.ajax(address + '/app/oa/notify/read', {
 				data: {
-					annouc_id: annouc_id,
-					dept_name: dept_name,
-					emp_name: emp_name
+					id:annouc_id,
+					userId:userId
 				},
 				dataType: 'json',
-				type: 'post',
+				type: 'get',
 				crossDomain: 'false',
 				timeout: 15000,
 				success: function(data) {
-					//mui.toast(data);
-					document.getElementById("content").innerHTML = data.annouc_content;
-					document.getElementById("title").innerHTML = data.annouc_title;
-					document.getElementById("author").innerHTML = data.annouc_apname;
-					document.getElementById("time").innerHTML = chendate('Y-m-d H:i:s', data.annouc_time);
+					var notify = data.notify;
+					
+					document.getElementById("content").innerHTML = notify.content.replace('src="','src="'+address);
+					document.getElementById("title").innerHTML = notify.title;
+					document.getElementById("author").innerHTML = notify.createByName;
+					document.getElementById("time").innerHTML =  notify.updateDate;
 				},
 				error: function(xhr, type, errorThrown) {
 					mui.toast('网络异常');
