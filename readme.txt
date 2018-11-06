@@ -1,9 +1,4 @@
-﻿													@auhter:jia
-													@start_time:2017-8-28
-													@QQ:286056528
-
-
-									                   _ooOoo_
+﻿									                   _ooOoo_
 									                  o8888888o
 									                  88" . "88
 									                  (| -_- |)
