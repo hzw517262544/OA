@@ -93,6 +93,7 @@
 				<p>结束时间：<span id="end_time"></span></p>
 			</div>
 			<div class="sysm">
+				<p>说明：</p>
 				<p id="explain"></p>
 				<p class="sysm-wz"></p>
 			</div>
@@ -142,20 +143,21 @@
 			var address = myStorage.getItem("address");
 			var emp_id = myStorage.getItem("emp_id");
 			var emp_name = myStorage.getItem("emp_name");
-			mui.ajax(address + 'flow_mydetails.php', {
+			mui.ajax(address + '/app/applyInfo/get', {
 				data: {
-					bid: bid,
-					flow_table: flow_table,
+					id: bid/*,
+					flow_table: flow_table,*/
 				},
 				dataType: 'json',
-				type: 'post',
+				type: 'get',
 				crossDomain: 'false',
 				timeout: 15000,
 				success: function(data) {
-					document.getElementById("explain").innerHTML = data.explain;
-					document.getElementById("type").innerHTML = data.type;
-					document.getElementById("start_time").innerHTML = chendate('Y-m-d H:i', data.start_time);
-					document.getElementById("end_time").innerHTML = chendate('Y-m-d H:i', data.end_time);
+					var applyInfo = data.applyInfo;
+					document.getElementById("explain").innerHTML = applyInfo.applyContent;
+					document.getElementById("type").innerHTML = applyInfo.applySecodTypeName;
+					document.getElementById("start_time").innerHTML = applyInfo.applyStartTime;
+					document.getElementById("end_time").innerHTML = applyInfo.applyEndTime;
 				},
 				error: function(xhr, type, errorThrown) {
 					//异常处理；
@@ -181,20 +183,20 @@
 			var address = myStorage.getItem("address");
 			var emp_id = myStorage.getItem("emp_id");
 			var emp_name = myStorage.getItem("emp_name");
-			mui.ajax(address + 'flow_mydetails.php', {
+			mui.ajax(address + '/app/applyInfo/get', {
 				data: {
-					bid: bid,
-					flow_table: flow_table,
+					id: bid
 				},
 				dataType: 'json',
-				type: 'post',
+				type: 'get',
 				crossDomain: 'false',
 				timeout: 15000,
 				success: function(data) {
-					document.getElementById("explain").innerHTML = data.explain;
-					document.getElementById("type").innerHTML = data.type;
-					document.getElementById("start_time").innerHTML = chendate('Y-m-d H:i', data.start_time);
-					document.getElementById("end_time").innerHTML = chendate('Y-m-d H:i', data.end_time);
+					var applyInfo = data.applyInfo;
+					document.getElementById("explain").innerHTML = applyInfo.applyContent;
+					document.getElementById("type").innerHTML = applyInfo.applySecodTypeName;
+					document.getElementById("start_time").innerHTML = applyInfo.applyStartTime;
+					document.getElementById("end_time").innerHTML = applyInfo.applyEndTime;
 				},
 				error: function(xhr, type, errorThrown) {
 					//异常处理；

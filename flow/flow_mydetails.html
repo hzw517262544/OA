@@ -118,21 +118,37 @@
 			var address = myStorage.getItem("address");
 			var emp_id = myStorage.getItem("emp_id");
 
-			mui.ajax(address + 'flow_mydetails.php', {
+			mui.ajax(address + '/app/applyInfo/get', {
 				data: {
-					bid: bid,
-					flow_table: flow_table,
-					bid: bid
+					id: bid/*,
+					flow_table: flow_table,*/
+				
 				},
 				dataType: 'json', //服务器返回json格式数据 
-				type: 'post', //HTTP请求类型
+				type: 'get', //HTTP请求类型
 				crossDomain: 'false',
 				timeout: 15000, //超时时间设置为10秒；              
 				success: function(data) {
-					document.getElementById("explain").innerHTML = data.explain;
-					document.getElementById("type").innerHTML = data.type;
-					document.getElementById("start_time").innerHTML = chendate('Y-m-d H:i', data.start_time);
-					document.getElementById("end_time").innerHTML = chendate('Y-m-d H:i', data.end_time);
+					var applyInfo = data.applyInfo;
+					document.getElementById("explain").innerHTML = applyInfo.applyContent;
+					document.getElementById("type").innerHTML = applyInfo.applySecodTypeName;
+					if(applyInfo.applyStatus==0){
+						document.getElementById("status").innerHTML ='待上级部门处理';
+					}
+					else if(data.todo_status==1){
+						document.getElementById("status").innerHTML ='通过';
+					}
+					else if(data.todo_status==2){
+						document.getElementById("status").innerHTML ='驳回';
+					}
+					else{
+						document.getElementById("status").innerHTML ='已移交';
+					}
+					
+					
+					
+					document.getElementById("start_time").innerHTML = applyInfo.applyStartTime;
+					document.getElementById("end_time").innerHTML = applyInfo.applyEndTime;
 				},
 				error: function(xhr, type, errorThrown) {
 					//异常处理；
@@ -160,20 +176,21 @@
 			var address = myStorage.getItem("address");
 			var emp_id = myStorage.getItem("emp_id");
 
-			mui.ajax(address + 'flow_mydetails.php', {
+			mui.ajax(address + '/app/applyInfo/get', {
 				data: {
-					bid: bid,
-					flow_table: flow_table,
+					id: bid/*,
+					flow_table: flow_table,*/
 				
 				},
 				dataType: 'json', //服务器返回json格式数据 
-				type: 'post', //HTTP请求类型
+				type: 'get', //HTTP请求类型
 				crossDomain: 'false',
 				timeout: 15000, //超时时间设置为10秒；              
 				success: function(data) {
-					document.getElementById("explain").innerHTML = data.explain;
-					document.getElementById("type").innerHTML = data.type;
-					if(data.todo_status==0){
+					var applyInfo = data.applyInfo;
+					document.getElementById("explain").innerHTML = applyInfo.applyContent;
+					document.getElementById("type").innerHTML = applyInfo.applySecodTypeName;
+					if(applyInfo.applyStatus==0){
 						document.getElementById("status").innerHTML ='待上级部门处理';
 					}
 					else if(data.todo_status==1){
@@ -188,8 +205,8 @@
 					
 					
 					
-					document.getElementById("start_time").innerHTML = chendate('Y-m-d H:i', data.start_time);
-					document.getElementById("end_time").innerHTML = chendate('Y-m-d H:i', data.end_time);
+					document.getElementById("start_time").innerHTML = applyInfo.applyStartTime;
+					document.getElementById("end_time").innerHTML = applyInfo.applyEndTime;
 				},
 				error: function(xhr, type, errorThrown) {
 					//异常处理；

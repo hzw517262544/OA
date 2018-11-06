@@ -128,7 +128,7 @@
 			var dept_name = myStorage.getItem("dept_name");
 			var address = myStorage.getItem("address");
 
-			mui.ajax(address + 'flow_todo.php', {
+			mui.ajax(address + '/app/activiti/task', {
 				data: {
 					dept_name: dept_name,
 				},
@@ -169,24 +169,30 @@ finallist = finallist +'<li id="'+data[i].bid+'" class="mui-table-view-cell"><a>
 
 			var dept_name = myStorage.getItem("dept_name");
 			var address = myStorage.getItem("address");
+			var username = myStorage.getItem("user_name");
+			
 
-			mui.ajax(address + 'flow_todo.php', {
+			mui.ajax(address + '/app/applyInfo/todoList', {
 				data: {
-					dept_name: dept_name,
+					username: username
 				},
 				dataType: 'json',
-				type: 'post',
+				type: 'get',
 				crossDomain: 'false',
 				timeout: 15000,
 				success: function(data) {
-						var finallist = '';
+					
+					var finallist = '';
 					for(i = 0; i < data.length; i++) {
 						var img =Math.round(Math.random()*3+1);
-						var stmp=data[i].flow_type;
+						var stmp=data[i].applyType;
 						$code=stmp.substr(0,1);
-
 						
-finallist = finallist +'<li id="'+data[i].bid+'" class="mui-table-view-cell"><a><i class="list-img list-img'+img+' mui-pull-left">'+$code+'</i>' + data[i].flow_type + '<i class="mui-pull-right update yd">'+data[i].flow_apname+'</i></a></li>';
+						var look = "";
+						 
+						finallist = finallist +'<li id="'+data[i].id+
+						'" class="mui-table-view-cell"><a><i class="list-img list-img'+$code+' mui-pull-left">'+$code+
+						'</i>' + data[i].applyTypeName + ''+look+' </a></li>';
 						}
 					document.getElementById("list").innerHTML = finallist;
 				},
@@ -197,7 +203,7 @@ finallist = finallist +'<li id="'+data[i].bid+'" class="mui-table-view-cell"><a>
 
 	  var   old_back = mui.back;   
         mui.back = function(){   
-        var wobj = plus.webview.getWebviewById("liebiao.html");
+        var wobj = plus.webview.getWebviewById("app.html");
 		wobj.reload(true);   
 		old_back()   
 		}   

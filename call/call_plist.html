@@ -91,7 +91,7 @@
 			var emp_id = myStorage.getItem('emp_id');
 			mui.ajax(address + 'call_plist.php', {
 				data: {
-					emp_id: emp_id
+					userId: emp_id
 				},
 				dataType: 'json',
 				type: 'post',
@@ -130,6 +130,7 @@ finallist = finallist + '<li class="mui-table-view-cell" onclick="openview(this.
 			var emp_id = myStorage.getItem('emp_id');
 			var user_name = myStorage.getItem('user_name');
 			var callplist = myStorage.getItem('callplist');
+			
 			if(callplist) {
 				var finallist = '';
 				var img = "";
@@ -143,8 +144,7 @@ finallist = finallist + '<li class="mui-table-view-cell" onclick="openview(this.
 finallist = finallist + '<li class="mui-table-view-cell" onclick="openview(this.id)" id="'+callplist[i].emp_id+'"><a><i class="mui-pull-left tx">'+img+'</i>'+callplist[i].emp_name+'<i class="mui-pull-right update">'+callplist[i].pos_name+'</i></a></li>';
 			document.getElementById("plist").innerHTML = finallist;		
 	}
-			} 
-			else {
+		}else {
 				mui.ajax(address+'call_plist.php', {
 					data: {
 						emp_id: emp_id,

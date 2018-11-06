@@ -120,38 +120,44 @@
 
 			plus.key.addEventListener("backbutton", function() {
 				_self.close("auto");
+				_self.close("auto");
 			}, false);
 		}
 
 		function addData() {
-			var job_number = myStorage.getItem("job_number");
+			
 			var emp_id = myStorage.getItem("emp_id");
 			var address = myStorage.getItem("address");
-			mui.ajax(address + 'flow_apply.php', {
+			mui.ajax(address + '/app/applyInfo/list', {
 				data: {
-					job_number: job_number,
-					emp_id:emp_id
+					userId:emp_id,
+					offset:0,
+					limit:100000
 				},
 				dataType: 'json',
-				type: 'post',
+				type: 'get',
 				crossDomain: 'false',
 				timeout: 15000,
 				success: function(data) {
+					var rows = data.rows;
+					
 					var finallist = '';
-					for(i = 0; i < data.length; i++) {
+					for(i = 0; i < rows.length; i++) {
 						var img =Math.round(Math.random()*3+1);
-						var stmp=data[i].flow_type;
+						var stmp=rows[i].applyType;
 						$code=stmp.substr(0,1);
-
+						
 						var look = "";
-						if(data[i].flow_look == 0 && data[i].status != 0 && data[i].status != 3) {
+						 /*if(rows[i].flow_look == 0 && data[i].status != 0 && data[i].status != 3) {
 							look = "<i class='mui-pull-right update wd'>未读</i>";
 						} else if(data[i].flow_look == 1) {
 							look = "<i class='mui-pull-right update yd'>已读</i>";
 						} else {
 							look = "<i class='mui-pull-right update wcl'>待" + data[i].flow_now_check + "处理</i>";
-						}
-finallist = finallist +'<li class="mui-table-view-cell"><a><i class="list-img list-img'+img+' mui-pull-left">'+$code+'</i>' + data[i].flow_type + ''+look+' </a></li>';
+						}*/
+						finallist = finallist +'<li id="'+rows[i].id+
+						'" class="mui-table-view-cell"><a><i class="list-img list-img'+$code+' mui-pull-left">'+$code+
+						'</i>' + rows[i].applyTypeName + ''+look+' </a></li>';
 						}
 					document.getElementById("list").innerHTML = finallist;
 				},
@@ -172,35 +178,40 @@ finallist = finallist +'<li class="mui-table-view-cell"><a><i class="list-img li
 		}
 
 		mui.plusReady(function() {
-			var job_number = myStorage.getItem("job_number");
+			
 			var emp_id = myStorage.getItem("emp_id");
 			var address = myStorage.getItem("address");
 
-			mui.ajax(address + 'flow_apply.php', {
+			mui.ajax(address + '/app/applyInfo/list', {
 				data: {
-					job_number: job_number,
-					emp_id:emp_id
+					userId:emp_id,
+					offset:0,
+					limit:100000
 				},
 				dataType: 'json',
-				type: 'post',
+				type: 'get',
 				crossDomain: 'false',
 				timeout: 15000,
 				success: function(data) {
+					var rows = data.rows;
+					
 					var finallist = '';
-					for(i = 0; i < data.length; i++) {
+					for(i = 0; i < rows.length; i++) {
 						var img =Math.round(Math.random()*3+1);
-						var stmp=data[i].flow_type;
+						var stmp=rows[i].applyType;
 						$code=stmp.substr(0,1);
-
+						
 						var look = "";
-						 if(data[i].flow_look == 0 && data[i].status != 0 && data[i].status != 3) {
+						 /*if(rows[i].flow_look == 0 && data[i].status != 0 && data[i].status != 3) {
 							look = "<i class='mui-pull-right update wd'>未读</i>";
 						} else if(data[i].flow_look == 1) {
 							look = "<i class='mui-pull-right update yd'>已读</i>";
 						} else {
 							look = "<i class='mui-pull-right update wcl'>待" + data[i].flow_now_check + "处理</i>";
-						}
-finallist = finallist +'<li id="'+data[i].bid+'" class="mui-table-view-cell"><a><i class="list-img list-img'+img+' mui-pull-left">'+$code+'</i>' + data[i].flow_type + ''+look+' </a></li>';
+						}*/
+						finallist = finallist +'<li id="'+rows[i].id+
+						'" class="mui-table-view-cell"><a><i class="list-img list-img'+$code+' mui-pull-left">'+$code+
+						'</i>' + rows[i].applyTypeName + ''+look+' </a></li>';
 						}
 					document.getElementById("list").innerHTML = finallist;
 				},
@@ -211,14 +222,15 @@ finallist = finallist +'<li id="'+data[i].bid+'" class="mui-table-view-cell"><a>
 			
 			
 		var   old_back = mui.back;   
-        mui.back = function(){   
-        var wobj = plus.webview.getWebviewById("liebiao.html");
-		wobj.reload(true);   
+        mui.back = function(){
+//      var wobj = plus.webview.getWebviewById("app.html");
+//		wobj.reload(true);
 		old_back()   
 		}  
 		
 			mui('#applylist').on('tap', 'li', function() {
 				var bid = this.id;
+				
 				var flow_tables = bid.split("-");
 				var flow_table = "oa_" + flow_tables[0];
 				var url = '';
@@ -234,8 +246,8 @@ finallist = finallist +'<li id="'+data[i].bid+'" class="mui-table-view-cell"><a>
 					url: url,
 					id: url,
 					extras: {
-						bid: bid,
-						flow_table: flow_table,
+						bid: bid/*,
+						flow_table: flow_table,*/
 					},
 					createNew: false, //是否重复创建同样id的webview，默认为false:不重复创建，直接显示
 					show: {
