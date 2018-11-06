@@ -195,7 +195,7 @@
 				<li class="mui-table-view-cell">
 					<div class="mui-input-row">
 						<label>申请类型：</label>
-						<input type="text" id='ap_type' placeholder="请填写申请类型">
+						<input type="text" maxlength="20" id='ap_type' placeholder="请填写申请类型">
 					</div>
 				</li>
 				<li class="mui-table-view-cell">
@@ -269,15 +269,16 @@
 			var sure = document.getElementById("sure");
 			sure.addEventListener("tap", function() {
 				var emp_id = myStorage.getItem("emp_id");
+				var user_name = myStorage.getItem("user_name");
 				var emp_name = myStorage.getItem("emp_name");
-				var job_number = myStorage.getItem("job_number");
-				var dept_name = myStorage.getItem("dept_name");
 				var ap_type = document.getElementById('ap_type').value;
+//				var leave_typed_name = document.getElementById('leavetypePicker').innerHTML;
 				var starttime = document.getElementById('starttime').innerHTML;
 				var endtime = document.getElementById('endtime').innerHTML;
 				var explain = document.getElementById('explain').value;
+				
 				if(!ap_type) {
-					mui.toast('请选择请假类型');
+					mui.toast('请填写申请类型');
 				} else if(!starttime) {
 					mui.toast('请选择开始时间');
 				} else if(!endtime) {
@@ -289,39 +290,38 @@
 				} else if(!explain) {
 					mui.toast('请填入说明');
 				} else {
-					mui.ajax(address + 'flow_anyap.php', {
+					mui.ajax(address + '/app/applyInfo/save', {
 						data: {
-							dept_name: dept_name,
-							emp_id: emp_id,
-							emp_name: emp_name,
-							job_number: job_number,
-							ap_type: ap_type,
-							starttime: starttime,
-							endtime: endtime,
-							explain: explain,
+							username:user_name,
+							name:emp_name,
+							applyType:'4',
+							applyTypeName:'其他',
+							applySecodType:'',
+							applySecodTypeName:ap_type,
+							applyStartTime:starttime,
+							applyEndTime:endtime,
+							applyContent:explain
+							
 						},
 						dataType: 'json', //服务器返回json格式数据
 						type: 'post', //HTTP请求类型
 						crossDomain: 'false',
 						timeout: 15000, //超时时间设置为10秒；       
 						success: function(data) {
-
-							if(data == 2) {
-								mui.toast("数据异常");
-							} else {
+							if(data.code == 0) {
 								mui.alert('接下来看你们老大态度', '提交成功', function() {
 									var wobj = plus.webview.getWebviewById("flow_anyap.html");
-									wobj.reload(true);
-									
-									//mui.back;
+									  wobj.reload(true);
 									/*mui.openWindow({
-										url: 'flow_anyap.html',
+										url: 'main.html',
 										waiting: {
 											autoShow: true,
 											title: '正在加载...',
 										}
 									})*/
 								}, 'div');
+							} else {
+								mui.toast("数据异常");
 							}
 
 						},

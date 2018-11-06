@@ -68,7 +68,6 @@
 					var address = myStorage.getItem("address");
 					var dept_name = myStorage.getItem("dept_name");
 					if(dept_name) {
-
 						document.getElementById("dept_name").innerHTML = dept_name;
 					} else {
 						mui.ajax(address + 'call.php', {

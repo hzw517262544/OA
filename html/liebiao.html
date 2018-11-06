@@ -188,17 +188,19 @@
 			mui.plusReady(function() {
 				var cid = myStorage.getItem("cid");
 				var address = myStorage.getItem("address");
-				var emp_id = myStorage.getItem("emp_id");
-				mui.ajax(address + 'liebiao.php', {
+				var userId = myStorage.getItem("emp_id");
+				console.log("------------>");
+				mui.ajax(address + '/app/message/myMessages', {
 					data: {
-						emp_id: emp_id,
-						cid: cid
+						userId: userId/*,
+						cid: cid*/
 					},
 					dataType: 'json',
-					type: 'post',
+					type: 'get',
 					crossDomain: 'false',
 					timeout: 15000,
 					success: function(data) {
+						
 						document.getElementById("list").innerHTML = data;
 					},
 					error: function(xhr, type, errorThrown) {

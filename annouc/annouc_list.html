@@ -118,8 +118,9 @@
 				crossDomain: 'false',
 				timeout: 15000,
 				success: function(data) {
+					var rows = data.rows;
 					var finallist = '';
-					for(i = 0; i < data.length; i++) {
+					for(i = 0; i < rows.length; i++) {
 						/*var lookname = rows[i].annouc_look + "";
 						var annouc_look = lookname.split(",");
 						var lookp = dept_name + '-' + emp_name;*/
@@ -164,6 +165,7 @@
 			var dept_name = myStorage.getItem('dept_name');
 			var emp_name = myStorage.getItem('emp_name');
 			var address = myStorage.getItem("address");
+			
 			mui.ajax(address + '/app/oa/notify/selfList', {
 				data: {
 					userId: userId,
@@ -198,7 +200,6 @@
 
 					document.getElementById("list").innerHTML = finallist;
 
-
 				},
 				error: function(xhr, type, errorThrown) {
 					//异常处理；
@@ -209,8 +210,8 @@
 			}, 'JOSN');
 			var old_back = mui.back;
 			mui.back = function() {
-				var wobj = plus.webview.getWebviewById("liebiao.html");
-				wobj.reload(true);
+				/*var wobj = plus.webview.getWebviewById("app.html");
+				wobj.reload(true);*/
 				old_back()
 			}
 
